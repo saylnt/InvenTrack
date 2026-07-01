@@ -1,0 +1,50 @@
+[
+    {
+        "id": "PRD-001",
+        "name": "Kulkas LG 2 Pintu",
+        "category": "Kulkas",
+        "stock": 15,
+        "warehouse_stock": 6,
+        "safety_stock": 5,
+        "price": 4000000,
+        "discount": 0,
+        "description": "Kulkas 2 Pintu Merk LG, hemat energi dan luas.",
+        "image": "kulkas.png"
+    },
+    {
+        "id": "PRD-002",
+        "name": "Kipas Angin Cosmos 16 inch",
+        "category": "Kipas Angin",
+        "stock": 8,
+        "warehouse_stock": 5,
+        "safety_stock": 5,
+        "price": 350000,
+        "discount": 0,
+        "description": "Kipas Angin Cosmos 16 inci, 3 mode kecepatan.",
+        "image": "uploads/prod_37a3f1a552994488a45bfabc2dd5e0e2.png"
+    },
+    {
+        "id": "PRD-003",
+        "name": "Mesin Cuci Aqua 2 Tabung",
+        "category": "Mesin Cuci",
+        "stock": 5,
+        "warehouse_stock": 10,
+        "safety_stock": 5,
+        "price": 2000000,
+        "discount": 0,
+        "description": "Mesin Cuci 2 Tabung Max. 9 Kg merk Aqua.",
+        "image": "mesincuci.png"
+    },
+    {
+        "id": "PRD-004",
+        "name": "Smart TV Polytron 32 inch",
+        "category": "TV",
+        "stock": 10,
+        "warehouse_stock": 4,
+        "safety_stock": 5,
+        "price": 3000000,
+        "discount": 0,
+        "description": "Smart TV 32 inch merk Polytron, resolusi HD.",
+        "image": "tv.png"
+    }
+]
