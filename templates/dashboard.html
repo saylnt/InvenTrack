@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- KPI Cards with Mini Charts -->
+<div style="margin-bottom: 20px;">
+    <h3 style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase;">{{ 'Indikator Kinerja Utama' if lang == 'id' else 'Key Performance Indicators' }}</h3>
+    <div class="dashboard-grid">
+        <div class="stat-card" style="padding: 15px;">
+            <h3 style="font-size: 0.75rem;">{{ 'INVENTARIS' if lang == 'id' else 'INVENTORY' }}</h3>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div class="value" style="color: var(--success); font-size: 1.4rem;">&#8593; 70.0%</div>
+                <canvas id="miniChart1" width="80" height="40"></canvas>
+            </div>
+        </div>
+        <div class="stat-card" style="padding: 15px;">
+            <h3 style="font-size: 0.75rem;">{{ 'PESANAN' if lang == 'id' else 'ORDERS' }}</h3>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div class="value" style="color: var(--success); font-size: 1.4rem;">&#8593; 40.0%</div>
+                <canvas id="miniChart2" width="80" height="40"></canvas>
+            </div>
+        </div>
+        <div class="stat-card" style="padding: 15px;">
+            <h3 style="font-size: 0.75rem;">{{ 'PENJUALAN' if lang == 'id' else 'SALES' }}</h3>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div class="value" style="color: var(--danger); font-size: 1.4rem;">&#8595; 10.0%</div>
+                <canvas id="miniChart3" width="80" height="40"></canvas>
+            </div>
+        </div>
+        <div class="stat-card" style="padding: 15px;">
+            <h3 style="font-size: 0.75rem;">{{ 'NILAI PESANAN PEMBELIAN TERLAMBAT' if lang == 'id' else 'VALUE OF LATE PURCHASE ORDERS' }}</h3>
+            <div class="value" style="font-size: 1.4rem; color: #374151; margin-top: 10px;">Rp 5.250.000</div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid" style="grid-template-columns: 2fr 1fr;">
+    <div class="chart-container" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); position: relative;">
+        <h3 style="margin-top: 0; color: #111;">{{ 'Statistik Penjualan dan Pembelian' if lang == 'id' else 'Sales And Purchase Statistics' }}</h3>
+        
+        <div style="position: absolute; top: 20px; right: 20px; display: flex; gap: 15px; font-size: 0.85rem; font-weight: 600;">
+            <span style="color: #FF5722;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FF5722;margin-right:5px;"></span>{{ 'Penjualan' if lang == 'id' else 'Sales' }}</span>
+            <span style="color: #2196F3;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#2196F3;margin-right:5px;"></span>{{ 'Pembelian' if lang == 'id' else 'Purchase' }}</span>
+        </div>
+
+        <canvas id="mainChart" height="120"></canvas>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="stat-card">
+            <h3>{{ 'Total Pelanggan' if lang == 'id' else 'Total Customers' }}</h3>
+            <div class="value" style="color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-users"></i> 437
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">{{ 'Total pembeli unik di KHASH ELEKTRONIK' if lang == 'id' else 'Total unique buyers at KHASH ELEKTRONIK' }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>{{ 'Rincian Pendapatan (Mar - Jun)' if lang == 'id' else 'Revenue Breakdown (Mar - Jun)' }}</h3>
+            <ul style="list-style: none; padding: 0; margin: 10px 0 0; font-size: 0.9rem;">
+                <li style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>{{ 'Maret' if lang == 'id' else 'March' }}:</span> <strong>Rp 50.000.000</strong></li>
+                <li style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>April:</span> <strong>Rp 29.000.000</strong></li>
+                <li style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>{{ 'Mei' if lang == 'id' else 'May' }}:</span> <strong>Rp 37.000.000</strong></li>
+                <li style="display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 5px;"><span>{{ 'Juni' if lang == 'id' else 'June' }}:</span> <strong>Rp 15.000.000</strong></li>
+                <li style="display: flex; justify-content: space-between; margin-top: 5px; font-weight: 700; color: var(--primary-color);"><span>TOTAL:</span> <strong>Rp 131.000.000</strong></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    const salesDataRaw = {{ sales_data|tojson }};
+    const labels = Object.keys(salesDataRaw).filter(k => salesDataRaw[k].sales > 0 || salesDataRaw[k].purchase > 0);
+    const salesData = labels.map(l => salesDataRaw[l].sales);
+    const purchaseData = labels.map(l => salesDataRaw[l].purchase);
+
+    // Format Rupiah on Y axis
+    function formatRp(val) {
+        if (val >= 1000000) return 'Rp ' + (val / 1000000).toFixed(0) + ' Jt';
+        if (val >= 1000) return 'Rp ' + (val / 1000).toFixed(0) + 'K';
+        return 'Rp ' + val;
+    }
+
+    // Main Chart (Sales and Purchase)
+    new Chart(document.getElementById('mainChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: '{{ "Penjualan" if lang == "id" else "Sales" }}',
+                    data: salesData,
+                    borderColor: '#FF5722',
+                    backgroundColor: '#FF5722',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#FF5722',
+                    pointRadius: 4,
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: '{{ "Pembelian" if lang == "id" else "Purchase" }}',
+                    data: purchaseData,
+                    borderColor: '#2196F3',
+                    backgroundColor: '#2196F3',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#2196F3',
+                    pointRadius: 4,
+                    tension: 0.3,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { 
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    ticks: {
+                        callback: function(value) { return formatRp(value); }
+                    }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Helper to create mini charts
+    function createMiniChart(ctxId, color, dataArr) {
+        new Chart(document.getElementById(ctxId), {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [{
+                    data: dataArr,
+                    borderColor: color,
+                    backgroundColor: color + '33',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                },
+                layout: { padding: 0 }
+            }
+        });
+    }
+
+    createMiniChart('miniChart1', '#10B981', [10, 15, 12, 20, 25, 40, 42]); // Green
+    createMiniChart('miniChart2', '#10B981', [5, 10, 10, 15, 40, 38, 55]);  // Green
+    createMiniChart('miniChart3', '#EF4444', [50, 40, 30, 35, 20, 10, 5]);  // Red
+</script>
+{% endblock %}
