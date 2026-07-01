@@ -1,0 +1,14 @@
+{
+    "Jan": {"sales": 42000000, "purchase": 35000000},
+    "Feb": {"sales": 38000000, "purchase": 32000000},
+    "Mar": {"sales": 50000000, "purchase": 41000000},
+    "Apr": {"sales": 29000000, "purchase": 33000000},
+    "May": {"sales": 37000000, "purchase": 28000000},
+    "Jun": {"sales": 15000000, "purchase": 18000000},
+    "Jul": {"sales": 0, "purchase": 0},
+    "Aug": {"sales": 0, "purchase": 0},
+    "Sept": {"sales": 0, "purchase": 0},
+    "Oct": {"sales": 0, "purchase": 0},
+    "Nov": {"sales": 0, "purchase": 0},
+    "Dec": {"sales": 0, "purchase": 0}
+}
