@@ -1,0 +1,39 @@
+[
+    {
+        "date": "19 June 2026 14:30",
+        "type": "OUT",
+        "items": [
+            {"name": "Smart TV Polytron 32 inch", "qty": 1},
+            {"name": "Kipas Angin Cosmos 16 inch", "qty": 3},
+            {"name": "Kulkas LG 2 Pintu", "qty": 1}
+        ]
+    },
+    {
+        "date": "18 June 2026 09:15",
+        "type": "OUT",
+        "items": [
+            {"name": "Mesin Cuci Aqua 2 Tabung", "qty": 1},
+            {"name": "Kipas Angin Cosmos 16 inch", "qty": 1},
+            {"name": "Smart TV Polytron 32 inch", "qty": 2}
+        ]
+    },
+    {
+        "date": "17 June 2026 10:00",
+        "type": "IN",
+        "items": [
+            {"name": "Mesin Cuci Aqua 2 Tabung", "qty": 5},
+            {"name": "Smart TV Polytron 32 inch", "qty": 8},
+            {"name": "Kipas Angin Cosmos 16 inch", "qty": 10},
+            {"name": "Kulkas LG 2 Pintu", "qty": 4}
+        ]
+    },
+    {
+        "date": "17 June 2026 13:45",
+        "type": "OUT",
+        "items": [
+            {"name": "Smart TV Polytron 32 inch", "qty": 1},
+            {"name": "Kulkas LG 2 Pintu", "qty": 1},
+            {"name": "Mesin Cuci Aqua 2 Tabung", "qty": 1}
+        ]
+    }
+]

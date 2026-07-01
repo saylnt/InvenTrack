@@ -1,0 +1,24 @@
+=== LAPORAN TRANSAKSI BARANG ===
+Tanggal,Tipe (IN/OUT),Barang,Jumlah
+19 June 2026 14:30,OUT,Smart TV Polytron 32 inch,1
+19 June 2026 14:30,OUT,Kipas Angin Cosmos 16 inch,3
+19 June 2026 14:30,OUT,Kulkas LG 2 Pintu,1
+18 June 2026 09:15,OUT,Mesin Cuci Aqua 2 Tabung,1
+18 June 2026 09:15,OUT,Kipas Angin Cosmos 16 inch,1
+18 June 2026 09:15,OUT,Smart TV Polytron 32 inch,2
+17 June 2026 10:00,IN,Mesin Cuci Aqua 2 Tabung,5
+17 June 2026 10:00,IN,Smart TV Polytron 32 inch,8
+17 June 2026 10:00,IN,Kipas Angin Cosmos 16 inch,10
+17 June 2026 10:00,IN,Kulkas LG 2 Pintu,4
+17 June 2026 13:45,OUT,Smart TV Polytron 32 inch,1
+17 June 2026 13:45,OUT,Kulkas LG 2 Pintu,1
+17 June 2026 13:45,OUT,Mesin Cuci Aqua 2 Tabung,1
+
+=== LAPORAN KEUNTUNGAN / KERUGIAN (RUGI LABA) ===
+Bulan,Penjualan (Sales),Pembelian (Purchase),Laba/Rugi,Status
+Jan,7000,12000,-5000,Rugi
+Feb,8000,14000,-6000,Rugi
+Mar,50000,10000,40000,Untung
+Apr,29000,12000,17000,Untung
+May,37000,14000,23000,Untung
+Jun,15000,9000,6000,Untung
