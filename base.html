@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVENTRACK - KHASH ELEKTRONIK</title>
+    <!-- Premium Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% if session.get('logged_in') %}
+    <!-- Sidebar / Menu -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="KHASH ELEKTRONIK Logo" style="width: 60px; height: 60px; object-fit: contain; border-radius: 12px; margin-bottom: 8px;">
+            <h2><i class="fa-solid fa-boxes-stacked"></i> INVENTRACK</h2>
+            <p class="subtitle">KHASH ELEKTRONIK</p>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+            <li><a href="{{ url_for('inventory') }}"><i class="fa-solid fa-box-open"></i> {{ 'Inventaris' if lang == 'id' else 'Inventory' }}</a></li>
+            <li><a href="{{ url_for('history') }}"><i class="fa-solid fa-clock-rotate-left"></i> {{ 'History & Laporan' if lang == 'id' else 'History & Reports' }}</a></li>
+            <li><a href="{{ url_for('settings') }}"><i class="fa-solid fa-gear"></i> {{ 'Akun & Pengaturan' if lang == 'id' else 'Account & Settings' }}</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header>
+            <div class="header-left">
+                <h1>{% block page_title %}{% endblock %}</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="{{ 'Cari...' if lang == 'id' else 'Search...' }}">
+                </div>
+                <div class="user-profile" onclick="document.getElementById('profileModalBase').style.display='block'" style="cursor: pointer;">
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                    <span>{{ session.get('user') }}</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content-wrapper">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Floating Chat Bubble -->
+    <div class="chat-bubble-btn" onclick="document.getElementById('globalChatModal').style.display='block'" title="{{ 'Hubungi Admin' if lang == 'id' else 'Contact Support' }}">
+        <i class="fa-solid fa-headset"></i>
+    </div>
+
+    <!-- Global Chat Modal -->
+    <div id="globalChatModal" class="modal" style="display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
+        <div class="modal-content" style="background:#fff; margin:8% auto; padding:0; border-radius:16px; width:420px; max-width:90%; overflow:hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+            <div style="background: linear-gradient(135deg, var(--primary-color), #7C3AED); padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:10px; color:white;">
+                    <div style="width:40px; height:40px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                        <i class="fa-solid fa-headset" style="font-size:1.2rem;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:700; font-size:1rem;">INVENTRACK Support</div>
+                        <div style="font-size:0.75rem; opacity:0.85;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10B981;margin-right:4px;"></span>Online</div>
+                    </div>
+                </div>
+                <span onclick="document.getElementById('globalChatModal').style.display='none'" style="color:white; font-size:24px; cursor:pointer; line-height:1;">&times;</span>
+            </div>
+            <div id="globalChatBox" style="height:280px; padding:15px; overflow-y:auto; background:#f9fafb;">
+                <div style="margin-bottom:10px; padding:10px 14px; background:#e0f2fe; border-radius:12px 12px 12px 2px; width:fit-content; max-width:80%; font-size:0.9rem;">
+                    {{ 'Halo! Saya bot asisten Inventrack. Ada yang bisa saya bantu hari ini?' if lang == 'id' else 'Hello! I am the Inventrack assistant bot. How can I help you today?' }}
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; padding:12px 15px; border-top:1px solid #e5e7eb;">
+                <input type="text" id="globalChatInput" placeholder="{{ 'Ketik pesan...' if lang == 'id' else 'Type a message...' }}" style="flex:1; padding:10px 14px; border:1px solid #d1d5db; border-radius:24px; outline:none; font-size:0.9rem;" onkeypress="if(event.key==='Enter') sendGlobalChat()">
+                <button onclick="sendGlobalChat()" style="width:40px; height:40px; border-radius:50%; border:none; background:var(--primary-color); color:white; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Profile Modal -->
+    <div id="profileModalBase" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
+        <div class="modal-content" style="background:#fff; margin:10% auto; padding:20px; border-radius:12px; width:400px; position:relative;">
+            <span onclick="document.getElementById('profileModalBase').style.display='none'" style="position:absolute; right:20px; top:15px; font-size:24px; cursor:pointer;">&times;</span>
+            <div style="text-align:center;">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width:80px; height:80px; object-fit:contain; border-radius:12px; margin:0 auto 15px;">
+                <h3 style="margin:0 0 5px;">TOKO KHASH ELEKTRONIK</h3>
+                <p style="color:var(--text-muted); margin:0 0 20px;">Administrator Profile</p>
+            </div>
+            
+            <div style="background:#f9fafb; padding:15px; border-radius:8px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #e5e7eb; padding-bottom:5px;">
+                    <span style="color:var(--text-muted);">Email</span>
+                    <strong>khash.elektronik@gmail.com</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #e5e7eb; padding-bottom:5px;">
+                    <span style="color:var(--text-muted);">WhatsApp</span>
+                    <strong>0857123456789</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #e5e7eb; padding-bottom:5px;">
+                    <span style="color:var(--text-muted);">Instagram</span>
+                    <strong>@khash.elektronik</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">Website</span>
+                    <strong>khashelektronikjakpus.com</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function sendGlobalChat() {
+        const input = document.getElementById('globalChatInput');
+        const text = input.value.trim();
+        if(!text) return;
+        
+        const chatBox = document.getElementById('globalChatBox');
+        
+        // User message
+        const userDiv = document.createElement('div');
+        userDiv.style.cssText = "margin-bottom:10px; padding:10px 14px; background:var(--primary-color); color:white; border-radius:12px 12px 2px 12px; width:fit-content; max-width:80%; margin-left:auto; font-size:0.9rem;";
+        userDiv.innerText = text;
+        chatBox.appendChild(userDiv);
+        
+        input.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+        
+        // Bot response (delay)
+        setTimeout(() => {
+            const botDiv = document.createElement('div');
+            botDiv.style.cssText = "margin-bottom:10px; padding:10px 14px; background:#e0f2fe; border-radius:12px 12px 12px 2px; width:fit-content; max-width:80%; font-size:0.9rem;";
+            
+            let reply = "";
+            const lowerText = text.toLowerCase();
+            
+            if (lowerText.includes("halo") || lowerText.includes("hai") || lowerText.includes("hello") || lowerText.includes("hi")) {
+                reply = "Halo! Ada yang bisa kami bantu mengenai aplikasi INVENTRACK? 😊";
+            } else if (lowerText.includes("stok") || lowerText.includes("barang") || lowerText.includes("stock") || lowerText.includes("product")) {
+                reply = "Untuk mengecek stok barang, Anda bisa melihat di menu Inventaris. Jika ada ketidaksesuaian, pastikan Anda telah menginput barang masuk/keluar dengan benar. 📦";
+            } else if (lowerText.includes("error") || lowerText.includes("bug") || lowerText.includes("rusak") || lowerText.includes("problem")) {
+                reply = "Mohon maaf atas ketidaknyamanan Anda. Kami telah merekam laporan ini. Silakan refresh (F5) halaman, atau hubungi langsung via WhatsApp ke 0857123456789. 🛠️";
+            } else if (lowerText.includes("password") || lowerText.includes("email")) {
+                reply = "Anda dapat mengganti password atau email Anda di halaman Pengaturan (Settings). Klik menu di sidebar. 🔑";
+            } else if (lowerText.includes("harga") || lowerText.includes("price") || lowerText.includes("diskon") || lowerText.includes("discount")) {
+                reply = "Untuk mengubah harga atau diskon produk, masuk ke menu Inventaris, lalu klik tombol Edit pada produk yang diinginkan. 💰";
+            } else if (lowerText.includes("terima kasih") || lowerText.includes("thanks") || lowerText.includes("makasih")) {
+                reply = "Sama-sama! Senang bisa membantu. Jangan ragu untuk bertanya lagi ya! 😄";
+            } else {
+                reply = "Terima kasih atas pesan Anda! Tim admin kami akan segera meninjaunya. Ada hal spesifik lain yang ingin ditanyakan? 💬";
+            }
+            
+            botDiv.innerText = reply;
+            chatBox.appendChild(botDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 800);
+    }
+    </script>
+
+    {% else %}
+        <!-- For Login Page -->
+        {% block login_content %}{% endblock %}
+    {% endif %}
+</body>
+</html>

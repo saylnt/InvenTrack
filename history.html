@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ 'History' if lang == 'en' else 'Riwayat Transaksi' }}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="margin: 0;">History</h2>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <span style="font-weight: 600;"><i class="fa-solid fa-filter"></i> Filter</span>
+    </div>
+</div>
+
+<div style="background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 80px;">
+    {% for h in history %}
+    <div style="border-bottom: 1px solid var(--border-color); padding: 15px 0;">
+        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">{{ h.date }}</div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                {% if h.type == 'IN' %}
+                    <div style="color: var(--success); font-weight: 700; margin-bottom: 5px; font-size: 1.1rem;">
+                        <i class="fa-solid fa-arrow-down"></i> Stock In
+                    </div>
+                {% else %}
+                    <div style="color: var(--danger); font-weight: 700; margin-bottom: 5px; font-size: 1.1rem;">
+                        <i class="fa-solid fa-arrow-up"></i> Stock Out
+                    </div>
+                {% endif %}
+                <div style="color: var(--text-main); margin-bottom: 10px;">{{ h['items']|length }} Products</div>
+                
+                {% for item in h['items'] %}
+                    <div style="display: flex; justify-content: space-between; width: 300px; margin-bottom: 5px; color: var(--text-muted);">
+                        <span>{{ item.name }}</span>
+                        <span>{{ '+' if h.type == 'IN' else '-' }}{{ item.qty }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div style="text-align: right;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: {{ 'var(--success)' if h.type == 'IN' else 'var(--danger)' }};">
+                    {{ '+' if h.type == 'IN' else '-' }}{{ h['items']|sum(attribute='qty') }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Floating Download Button -->
+<div style="position: fixed; bottom: 40px; right: 40px; z-index: 100;">
+    <a href="{{ url_for('download_report') }}" style="background: #0033CC; color: white; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0, 51, 204, 0.4); transition: transform 0.2s;">
+        <i class="fa-solid fa-download"></i> Download Excel
+    </a>
+</div>
+{% endblock %}
